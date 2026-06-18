@@ -1,0 +1,76 @@
+server:
+  port: 8080 # 🌟 Correction : Aligné avec le port interne du docker-compose
+
+spring:
+  application:
+    name: api-gateway
+
+  # ── OAuth2 Resource Server (JWT validation via Keycloak interne) ──
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI:http://keycloak:8080/realms/swimming-platform}
+          jwk-set-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI:http://keycloak:8080/realms/swimming-platform/protocol/openid-connect/certs}
+
+  # ── Gateway Routes (Routage Inter-Conteneurs) ───────────────────────────
+  cloud:
+    gateway:
+      routes:
+        # 1. Route Métier Standard (Sport) -> Backend Java
+        - id: sport-service
+          uri: ${SPORT_SERVICE_URL:http://backend:8089} # 🌟 Correction : nom du conteneur + port 8089
+          predicates:
+            - Path=/api/sport/**
+          filters:
+            - PreserveHostHeader
+
+        # 2. Route pour le Chatbot IA (RAG) -> Backend Java
+        - id: ai-chatbot-service
+          uri: ${AI_SERVICE_URL:http://backend:8089} # 🌟 Nouvelle route : Envoie les requêtes IA au backend
+          predicates:
+            - Path=/api/ai/**
+          filters:
+            - PreserveHostHeader
+
+        # 3. Route vers le Scraper API -> Python FastAPI
+        - id: scraper-api-service
+          uri: ${SCRAPER_SERVICE_URL:http://scraper-api:8000} # 🌟 Nouvelle route : Envoie le scraping et les données à FastAPI
+          predicates:
+            - Path=/api/scrape/**, /api/data/**
+          filters:
+            - PreserveHostHeader
+
+      # Default filters applied to all routes
+      default-filters:
+        - DedupeResponseHeader=Access-Control-Allow-Credentials Access-Control-Allow-Origin
+
+      # CORS configuration (Autorise ton Angular)
+      globalcors:
+        cors-configurations:
+          '[/**]':
+            allowedOrigins: "http://localhost:4200"
+            allowedMethods:
+              - GET
+              - POST
+              - PUT
+              - DELETE
+              - OPTIONS
+            allowedHeaders: "*"
+            allowCredentials: true
+
+# ── Actuator ─────────────────────────────────────
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health, info, gateway
+  endpoint:
+    gateway:
+      enabled: true
+
+# ── Logging ──────────────────────────────────────
+logging:
+  level:
+    org.springframework.cloud.gateway: DEBUG
+    org.springframework.security: DEBUG

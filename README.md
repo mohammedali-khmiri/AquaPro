@@ -1,3 +1,39 @@
+# AquaPro
+
+## Description
+AquaPro est une plateforme moderne et centralisée de gestion pour les clubs de natation. Elle automatise l'acquisition des données officielles de la Fédération Tunisienne de Natation (FTN) via un agent de scraping autonome et intègre un chatbot d'intelligence artificielle contextuel. Grâce à l'architecture RAG (Retrieval-Augmented Generation), l'IA répond de manière précise et véridique aux utilisateurs en s'appuyant directement sur les articles, les clubs répertoriés et les classements extraits des documents PDF officiels de la fédération.
+
+## Technologies utilisées
+*   **Frontend :** Angular (Architecture standalone, Tailwind CSS)
+*   **Backend & Routage :** Spring Boot (REST API), Spring Cloud Gateway, Spring AI
+*   **Sécurité / IAM :** Keycloak (OAuth2 / JWT OIDC Resource Server)
+*   **Agent de Collecte :** Python (FastAPI, Cloudscraper, BeautifulSoup, Pdfplumber)
+*   **Bases de données :** PostgreSQL (Données métiers relationnelles) & MongoDB (Données de scraping NoSQL)
+*   **Moteur IA Local :** Ollama (LLM utilisé : `qwen2.5:1.5b` optimisé pour CPU)
+
+## Prérequis
+*   Node.js 18+ (Pour le développement local Frontend)
+*   Java JDK 17+ (Pour le développement local Backend)
+
+## Installation => Grâce à la conteneurisation complète de l'écosystème, l'installation et le lancement s'effectuent en une seule commande en moins de 10 minutes :
+npm install
+
+## Lancement
+# 1. npm start
+# 2. Lancer toute l'infrastructure (Frontend, Services, BDD, Gateway, IA)
+docker compose up -d --build
+
+## Variables d'environnement
+Voir .env.example
+
+## Démo
+Vidéo : https://...
+Déploiement : https://...
+
+
+
+
+
 # 🏊 Swimming Platform — Sport & Competition Microservice
 
 ## Architecture Overview

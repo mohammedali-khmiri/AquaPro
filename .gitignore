@@ -1,0 +1,24 @@
+# Node.js
+node_modules/
+
+# Java / Maven
+target/
+
+# Angular / Frontend build
+dist/
+
+# IntelliJ IDEA
+.idea/
+
+# VS Code
+.vscode/
+
+# Logs
+*.log
+
+# Environment files
+.env.example
+
+# OS files
+.DS_Store
+Thumbs.db
