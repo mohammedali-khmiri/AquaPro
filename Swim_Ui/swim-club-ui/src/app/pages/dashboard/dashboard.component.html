@@ -1,0 +1,262 @@
+<div class="space-y-8 pb-10">
+  <!-- Page Header -->
+  <div class="flex items-center justify-between pt-2">
+    <div>
+      <h1 class="text-2xl font-bold text-foreground tracking-tight">{{ 'overview' | t }}</h1>
+      <p class="text-sm text-muted-foreground mt-1">{{ 'welcome_today' | t }}</p>
+    </div>
+    <button (click)="openNewSession()" class="bg-primary hover:bg-primary/90 text-primary-foreground px-4 py-2 rounded-xl text-sm font-semibold transition-colors shadow-sm flex items-center gap-2">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      {{ 'new_session' | t }}
+    </button>
+  </div>
+
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:1.5rem;">
+
+    <!-- Active Swimmers -->
+    <div style="background:#fff;border-radius:1rem;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid #e2e8f0;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-1rem;top:-1rem;width:5rem;height:5rem;background:rgba(14,165,233,.1);border-radius:9999px;filter:blur(20px);"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <p style="font-size:.875rem;font-weight:500;color:#64748b;margin:0;">{{ 'active_swimmers' | t }}</p>
+        <div style="width:2.25rem;height:2.25rem;border-radius:.5rem;background:rgba(14,165,233,.12);display:flex;align-items:center;justify-content:center;color:#0ea5e9;">
+          <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+        </div>
+      </div>
+      <h3 style="font-size:1.875rem;font-weight:700;color:#1e293b;margin:0;">{{ activeSwimmersCount }}</h3>
+      <p style="font-size:.75rem;font-weight:500;color:#10b981;margin:.5rem 0 0;display:flex;align-items:center;gap:.25rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:.875rem;height:.875rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 10l7-7m0 0l7 7m-7-7v18"/></svg>
+        12% from last month
+      </p>
+    </div>
+
+    <!-- Upcoming Competitions -->
+    <div style="background:#fff;border-radius:1rem;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid #e2e8f0;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-1rem;top:-1rem;width:5rem;height:5rem;background:rgba(245,158,11,.1);border-radius:9999px;filter:blur(20px);"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <p style="font-size:.875rem;font-weight:500;color:#64748b;margin:0;">{{ 'upcoming_competitions' | t }}</p>
+        <div style="width:2.25rem;height:2.25rem;border-radius:.5rem;background:rgba(245,158,11,.12);display:flex;align-items:center;justify-content:center;color:#f59e0b;">
+          <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+        </div>
+      </div>
+      <h3 style="font-size:1.875rem;font-weight:700;color:#1e293b;margin:0;">{{ upcomingCompetitionsCount }}</h3>
+      <p style="font-size:.75rem;font-weight:500;color:#f59e0b;margin:.5rem 0 0;display:flex;align-items:center;gap:.25rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:.875rem;height:.875rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Next in 4 days
+      </p>
+    </div>
+
+    <!-- Coaches Available -->
+    <div style="background:#fff;border-radius:1rem;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid #e2e8f0;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-1rem;top:-1rem;width:5rem;height:5rem;background:rgba(16,185,129,.1);border-radius:9999px;filter:blur(20px);"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <p style="font-size:.875rem;font-weight:500;color:#64748b;margin:0;">{{ 'coaches_available' | t }}</p>
+        <div style="width:2.25rem;height:2.25rem;border-radius:.5rem;background:rgba(16,185,129,.12);display:flex;align-items:center;justify-content:center;color:#10b981;">
+          <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z"/></svg>
+        </div>
+      </div>
+      <h3 style="font-size:1.875rem;font-weight:700;color:#1e293b;margin:0;">{{ activeCoachesCount }}</h3>
+      <p style="font-size:.75rem;font-weight:500;color:#64748b;margin:.5rem 0 0;display:flex;align-items:center;gap:.25rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:.875rem;height:.875rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+        All active today
+      </p>
+    </div>
+
+    <!-- Avg Pool Temp -->
+    <div style="background:#fff;border-radius:1rem;padding:1.25rem;box-shadow:0 2px 12px rgba(0,0,0,.08);border:1px solid #e2e8f0;position:relative;overflow:hidden;">
+      <div style="position:absolute;right:-1rem;top:-1rem;width:5rem;height:5rem;background:rgba(239,68,68,.1);border-radius:9999px;filter:blur(20px);"></div>
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:.75rem;">
+        <p style="font-size:.875rem;font-weight:500;color:#64748b;margin:0;">{{ 'avg_pool_temp' | t }}</p>
+        <div style="width:2.25rem;height:2.25rem;border-radius:.5rem;background:rgba(239,68,68,.12);display:flex;align-items:center;justify-content:center;color:#ef4444;">
+          <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"/></svg>
+        </div>
+      </div>
+      <h3 style="font-size:1.875rem;font-weight:700;color:#1e293b;margin:0;">27.5°C</h3>
+      <p style="font-size:.75rem;font-weight:500;color:#10b981;margin:.5rem 0 0;display:flex;align-items:center;gap:.25rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:.875rem;height:.875rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        Optimal Range
+      </p>
+    </div>
+  </div>
+
+  <!-- Charts Section -->
+  <div class="glass rounded-xl p-6 shadow-sm">
+    <div class="flex items-center justify-between mb-6">
+      <div class="flex items-center gap-2">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"/></svg>
+        <h3 class="font-bold text-foreground">{{ 'weekly_chart' | t }}</h3>
+      </div>
+      <select class="text-xs bg-card border border-border text-muted-foreground rounded-lg px-3 py-1.5 focus:outline-none focus:ring-1 focus:ring-primary">
+        <option>{{ 'this_week' | t }}</option><option>{{ 'last_week' | t }}</option><option>{{ 'this_month' | t }}</option>
+      </select>
+    </div>
+
+    <!-- Bar Chart — fixed 160px chart area -->
+    <div class="relative" style="height:200px;">
+      <!-- Y-axis grid lines -->
+      <div class="absolute inset-0 flex flex-col justify-between pointer-events-none pb-8">
+        <div class="w-full border-t border-dashed border-border/60"></div>
+        <div class="w-full border-t border-dashed border-border/60"></div>
+        <div class="w-full border-t border-dashed border-border/60"></div>
+        <div class="w-full border-t border-dashed border-border/60"></div>
+        <div class="w-full border-t border-border/80"></div>
+      </div>
+      <!-- Y-axis labels -->
+      <div class="absolute left-0 top-0 h-full flex flex-col justify-between text-[10px] text-muted-foreground pb-8 w-7">
+        <span>100</span><span>75</span><span>50</span><span>25</span><span>0</span>
+      </div>
+
+      <!-- Bars container -->
+      <div class="absolute left-8 right-0 bottom-8 top-0 flex items-end justify-around gap-2 px-2">
+
+        <!-- Mon -->
+        <div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+          <div class="w-full relative flex flex-col justify-end rounded-t-md overflow-hidden" style="height:65%; background:#dbeafe;">
+            <div class="w-full rounded-t-md" style="height:40%;background:#3b82f6;"></div>
+          </div>
+          <span class="text-[11px] font-medium text-muted-foreground">Mon</span>
+        </div>
+
+        <!-- Tue -->
+        <div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+          <div class="w-full relative flex flex-col justify-end rounded-t-md overflow-hidden" style="height:80%; background:#bae6fd;">
+            <div class="w-full rounded-t-md" style="height:60%;background:#0ea5e9;"></div>
+          </div>
+          <span class="text-[11px] font-medium text-muted-foreground">Tue</span>
+        </div>
+
+        <!-- Wed -->
+        <div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+          <div class="w-full relative flex flex-col justify-end rounded-t-md overflow-hidden" style="height:55%; background:#ede9fe;">
+            <div class="w-full rounded-t-md" style="height:75%;background:#8b5cf6;"></div>
+          </div>
+          <span class="text-[11px] font-medium text-muted-foreground">Wed</span>
+        </div>
+
+        <!-- Thu -->
+        <div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+          <div class="w-full relative flex flex-col justify-end rounded-t-md overflow-hidden" style="height:90%; background:#dbeafe;">
+            <div class="w-full rounded-t-md" style="height:70%;background:#3b82f6;"></div>
+          </div>
+          <span class="text-[11px] font-medium text-foreground font-bold">Thu</span>
+        </div>
+
+        <!-- Fri -->
+        <div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+          <div class="w-full relative flex flex-col justify-end rounded-t-md overflow-hidden" style="height:70%; background:#d1fae5;">
+            <div class="w-full rounded-t-md" style="height:45%;background:#10b981;"></div>
+          </div>
+          <span class="text-[11px] font-medium text-muted-foreground">Fri</span>
+        </div>
+
+        <!-- Sat -->
+        <div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+          <div class="w-full relative flex flex-col justify-end rounded-t-md overflow-hidden" style="height:100%; background:#fef3c7;">
+            <div class="w-full rounded-t-md" style="height:90%;background:#f59e0b;"></div>
+          </div>
+          <span class="text-[11px] font-bold text-foreground">Sat</span>
+        </div>
+
+        <!-- Sun -->
+        <div class="flex-1 flex flex-col items-center gap-2 group h-full justify-end">
+          <div class="w-full relative flex flex-col justify-end rounded-t-md overflow-hidden" style="height:35%; background:#f1f5f9;">
+            <div class="w-full rounded-t-md" style="height:30%;background:#94a3b8;"></div>
+          </div>
+          <span class="text-[11px] font-medium text-muted-foreground">Sun</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Legend -->
+    <div class="flex items-center justify-center gap-6 mt-2">
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 rounded-sm bg-blue-100 border border-blue-200"></span>
+        <span class="text-xs text-muted-foreground font-medium">Expected</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="w-3 h-3 rounded-sm bg-primary"></span>
+        <span class="text-xs text-muted-foreground font-medium">Actual Attendance</span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div class="lg:col-span-2 glass rounded-2xl p-6">
+      <div class="flex items-center mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-pool" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>
+        <h3 class="font-bold text-slate-800">Training Schedule</h3>
+      </div>
+      <div class="space-y-4">
+        <div class="flex items-center p-3 hover:bg-slate-50 rounded-xl transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-pool-light/50 flex flex-col items-center justify-center text-pool-dark mr-4">
+            <span class="text-xs font-bold">10:00</span>
+          </div>
+          <div class="flex-1">
+            <h4 class="text-sm font-bold text-slate-800">Advanced Butterfly Technique</h4>
+            <p class="text-xs text-slate-500">Coach: Mark Davis • Lane 3-4</p>
+          </div>
+          <div class="px-3 py-1 bg-amber-100 text-amber-700 text-xs font-bold rounded-lg">
+            In Progress
+          </div>
+        </div>
+        <div class="flex items-center p-3 hover:bg-slate-50 rounded-xl transition-colors">
+          <div class="w-12 h-12 rounded-xl bg-slate-100 flex flex-col items-center justify-center text-slate-600 mr-4">
+            <span class="text-xs font-bold">13:30</span>
+          </div>
+          <div class="flex-1">
+            <h4 class="text-sm font-bold text-slate-800">Junior Squad Training</h4>
+            <p class="text-xs text-slate-500">Coach: Emma Wilson • Lane 1-2</p>
+          </div>
+          <div class="px-3 py-1 bg-slate-100 text-slate-600 text-xs font-bold rounded-lg">
+            Upcoming
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="glass rounded-2xl p-6">
+      <div class="flex items-center mb-4">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 mr-2 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M11.049 2.927c.3-.921 1.603-.921 1.902 0l1.519 4.674a1 1 0 00.95.69h4.915c.969 0 1.371 1.24.588 1.81l-3.976 2.888a1 1 0 00-.363 1.118l1.518 4.674c.3.922-.755 1.688-1.538 1.118l-3.976-2.888a1 1 0 00-1.176 0l-3.976 2.888c-.783.57-1.838-.197-1.538-1.118l1.518-4.674a1 1 0 00-.363-1.118l-3.976-2.888c-.784-.57-.38-1.81.588-1.81h4.914a1 1 0 00.951-.69l1.519-4.674z"/></svg>
+        <h3 class="font-bold text-slate-800">Top Performers</h3>
+      </div>
+      <div class="space-y-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <img src="https://i.pravatar.cc/150?img=11" class="w-10 h-10 rounded-full" />
+            <div class="ml-3">
+              <h4 class="text-sm font-bold text-slate-800">Jake Peralta</h4>
+              <p class="text-xs text-slate-500">100m Free - 48.9s</p>
+            </div>
+          </div>
+          <div class="w-7 h-7 rounded-full bg-amber-100 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-amber-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <img src="https://i.pravatar.cc/150?img=5" class="w-10 h-10 rounded-full" />
+            <div class="ml-3">
+              <h4 class="text-sm font-bold text-slate-800">Rosa Diaz</h4>
+              <p class="text-xs text-slate-500">200m IM - 2:03.1s</p>
+            </div>
+          </div>
+          <div class="w-7 h-7 rounded-full bg-slate-100 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-slate-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+        </div>
+        <div class="flex items-center justify-between">
+          <div class="flex items-center">
+            <img src="https://i.pravatar.cc/150?img=12" class="w-10 h-10 rounded-full" />
+            <div class="ml-3">
+              <h4 class="text-sm font-bold text-slate-800">Terry Jeffords</h4>
+              <p class="text-xs text-slate-500">50m Fly - 21.8s</p>
+            </div>
+          </div>
+          <div class="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 text-orange-400" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>

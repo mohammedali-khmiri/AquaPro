@@ -1,0 +1,37 @@
+<ng-container *ngIf="!isAuthRoute; else authLayout">
+  <div class="flex h-screen w-full bg-slate-50 dark:bg-slate-900 overflow-hidden text-slate-800 dark:text-slate-100">
+    <!-- Sidebar Container -->
+    <aside class="flex-shrink-0 h-full border-r border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 shadow-sm z-20 relative transition-all duration-300"
+           [class.w-64]="!layoutSvc.isCollapsed"
+           [class.w-16]="layoutSvc.isCollapsed">
+      <app-sidebar></app-sidebar>
+    </aside>
+
+    <!-- Main Area Container -->
+    <div class="flex-1 flex flex-col h-full overflow-hidden relative min-w-0">
+      <!-- Header -->
+      <header class="h-16 flex-shrink-0 border-b border-slate-200 dark:border-slate-700 bg-white/80 dark:bg-slate-800/80 backdrop-blur z-10 w-full px-6 flex items-center">
+        <app-header class="w-full"></app-header>
+      </header>
+
+      <!-- Content Area -->
+      <main class="flex-1 overflow-x-hidden overflow-y-auto bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
+        <div class="container mx-auto py-10 px-6 sm:px-8 max-w-[1400px]">
+          <router-outlet></router-outlet>
+        </div>
+      </main>
+    </div>
+  </div>
+</ng-container>
+
+<!-- QR Scanner (Admin/Coach) — mounted at root to avoid backdrop-filter stacking context -->
+<app-qr-scanner *ngIf="qrSvc.isOpen" (close)="qrSvc.close()"></app-qr-scanner>
+<!-- My QR Code (Swimmer) — own QR code modal -->
+<app-my-qr *ngIf="qrSvc.myQrOpen" (close)="qrSvc.closeMyQr()"></app-my-qr>
+
+<ng-template #authLayout>
+  <div class="min-h-screen w-full bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-100">
+    <router-outlet></router-outlet>
+  </div>
+</ng-template>
+

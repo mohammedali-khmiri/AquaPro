@@ -1,0 +1,140 @@
+services:
+  # --- INFRASTRUCTURE DE BASE ---
+
+  # ── PostgreSQL ───────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: aquapro-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: postgres
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: mysecretpassword
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+    networks: # 🌟 Correction : Ajouté au réseau global
+      - aquapro-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ── Ollama AI Engine ───────────────────────────────────────────────────────
+  ollama:
+    image: ollama/ollama:latest
+    container_name: aquapro-ollama
+    restart: unless-stopped
+    ports:
+      - "11434:11434"
+    volumes:
+      - ollama_data:/root/.ollama
+    networks: # 🌟 Correction : Ajouté au réseau global
+      - aquapro-network
+
+  # ── MongoDB ──────────────────────────────────────────────────────────────────
+  mongodb:
+    image: mongo:latest
+    container_name: aquapro-mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo_data:/data/db
+    networks:
+      - aquapro-network
+    restart: unless-stopped
+
+  # ── Keycloak ─────────────────────────────────────────────────────────────────
+  keycloak:
+    image: quay.io/keycloak/keycloak:latest
+    container_name: aquapro-keycloak
+    command: start-dev
+    environment:
+      - KEYCLOAK_ADMIN=admin
+      - KEYCLOAK_ADMIN_PASSWORD=admin
+    ports:
+      - "8081:8080"
+    networks:
+      - aquapro-network
+    restart: unless-stopped
+
+  # --- MICROSERVICES AGENTS ---
+  scraper-api:
+    build:
+      context: ./swim-club-scraper
+    container_name: aquapro-scraper-api
+    ports:
+      - "8000:8000"
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    depends_on:
+      - mongodb
+    networks:
+      - aquapro-network
+    restart: unless-stopped
+
+  # --- LOGIQUE MÉTIER & ROUTAGE ---
+
+  # ── Spring Boot Backend ──────────────────────────────────────────────────────
+  backend:
+    build:
+      context: ./Swimming-Club/swim-club-backend
+      dockerfile: Dockerfile
+    container_name: aquapro-backend
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres:5432/postgres
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: mysecretpassword
+      SERVER_PORT: 8089
+    ports:
+      - "8089:8089"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      mongodb:
+        condition: service_started
+      ollama:
+        condition: service_started
+    networks:
+      - aquapro-network
+    restart: unless-stopped
+
+  # ── API Gateway ──────────────────────────────────────────────────────────────
+  api-gateway:
+    build:
+      context: ./Swimming-Club/api-gateway
+    container_name: aquapro-gateway
+    ports:
+      - "8080:8080" # L'unique porte d'entrée de l'application
+    depends_on:
+      - backend
+      - scraper-api
+      - keycloak
+    networks:
+      - aquapro-network
+    restart: unless-stopped
+
+  # ── Angular Frontend ─────────────────────────────────────────────────────────
+  frontend:
+    build:
+      context: ./Swim_Ui/swim-club-ui
+      dockerfile: Dockerfile
+    container_name: aquapro-frontend
+    ports:
+      - "80:80"
+    depends_on:
+      - api-gateway # 🌟 Correction : Dépend de la Gateway car elle centralise tout
+    networks:
+      - aquapro-network
+    restart: unless-stopped
+
+networks:
+  aquapro-network:
+    driver: bridge
+
+volumes:
+  postgres_data:
+  ollama_data:
+  mongo_data:

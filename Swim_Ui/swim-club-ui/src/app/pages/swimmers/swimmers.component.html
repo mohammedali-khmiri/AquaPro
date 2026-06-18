@@ -1,0 +1,240 @@
+<div class="space-y-6 flex flex-col h-full">
+  <div class="flex items-center justify-between flex-shrink-0">
+    <div>
+      <h1 class="text-2xl font-bold text-slate-800 tracking-tight">{{ 'swimmers_title' | t }}</h1>
+      <p class="text-sm text-slate-500">{{ 'swimmers_sub' | t }}</p>
+    </div>
+    <button (click)="openAddModal()" style="background-color:#0ea5e9;color:#fff;padding:.5rem 1.25rem;border-radius:.75rem;font-size:.875rem;font-weight:600;border:none;cursor:pointer;display:flex;align-items:center;gap:.5rem;box-shadow:0 2px 8px rgba(14,165,233,.35);">
+      <svg xmlns="http://www.w3.org/2000/svg" style="width:1rem;height:1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+      Add Swimmer
+    </button>
+  </div>
+
+  <div class="glass rounded-2xl flex-1 overflow-hidden flex flex-col">
+    <!-- toolbar -->
+    <div class="p-4 border-b border-slate-200/50 flex flex-col md:flex-row justify-between items-stretch md:items-center gap-4 bg-white/50">
+      <div class="flex flex-1 flex-wrap gap-2">
+        <!-- Search bar -->
+        <div class="relative min-w-[200px] flex-1 max-w-xs">
+          <span class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none text-slate-400">
+            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </span>
+          <input type="text" [(ngModel)]="searchTerm" class="pl-9 pr-4 py-2 w-full border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-2 focus:ring-pool/50 focus:border-pool text-slate-600 transition-all" [placeholder]="'search_swimmer' | t">
+        </div>
+
+        <!-- Level Filter -->
+        <select [(ngModel)]="filterLevel" class="px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-pool text-slate-600">
+          <option value="ALL">{{ 'all_levels' | t }}</option>
+          <option value="BEGINNER">Débutant (Beginner)</option>
+          <option value="INTERMEDIATE">Intermédiaire (Intermediate)</option>
+          <option value="ADVANCED">Avancé (Advanced)</option>
+          <option value="EXPERT">Expert (Expert)</option>
+        </select>
+
+        <!-- Status Filter -->
+        <select [(ngModel)]="filterStatus" class="px-3 py-2 border border-slate-200 rounded-lg text-sm bg-white focus:outline-none focus:ring-1 focus:ring-pool text-slate-600">
+          <option value="ALL">{{ 'all_statuses' | t }}</option>
+          <option value="ACTIVE">{{ 'active' | t }}</option>
+          <option value="INACTIVE">{{ 'inactive' | t }}</option>
+        </select>
+      </div>
+      <div class="text-sm text-slate-500 font-medium whitespace-nowrap self-end md:self-auto">
+        {{ filteredSwimmers.length }} trouvé(s) sur {{ swimmers.length }}
+      </div>
+    </div>
+
+    <!-- table -->
+    <div class="flex-1 overflow-auto">
+      <table class="w-full text-left border-collapse min-w-max">
+        <thead>
+          <tr class="bg-slate-50/90 backdrop-blur text-slate-500 text-xs uppercase tracking-wider sticky top-0 z-10 shadow-sm border-b border-slate-200">
+            <th class="p-4 font-semibold">{{ 'col_swimmer' | t }}</th>
+            <th class="p-4 font-semibold">{{ 'col_squad' | t }}</th>
+            <th class="p-4 font-semibold">{{ 'col_stroke' | t }}</th>
+            <th class="p-4 font-semibold">{{ 'col_status' | t }}</th>
+            <th class="p-4 font-semibold text-right">{{ 'col_actions' | t }}</th>
+          </tr>
+        </thead>
+        <tbody class="text-sm divide-y divide-slate-100">
+          <tr *ngFor="let swimmer of filteredSwimmers" class="hover:bg-slate-50/80 transition-colors group">
+            <td class="p-4">
+              <div class="flex items-center">
+                <div class="w-10 h-10 rounded-full border border-slate-200 bg-pool flex items-center justify-center text-white font-bold">
+                  {{ swimmer.userFirstName ? swimmer.userFirstName.charAt(0) : '?' }}{{ swimmer.userLastName ? swimmer.userLastName.charAt(0) : '?' }}
+                </div>
+                <div class="ml-3">
+                  <p class="font-bold text-slate-800">{{ swimmer.userFirstName }} {{ swimmer.userLastName }}</p>
+                  <p class="text-xs text-slate-500">{{ swimmer.email || 'No email' }}</p>
+                </div>
+              </div>
+            </td>
+            <td class="p-4"><span class="px-3 py-1 bg-pool-light text-pool-dark text-xs font-bold rounded-lg pb-1 inline-block">{{ swimmer.level || swimmer.category || 'Standard' }}</span></td>
+            <td class="p-4 text-slate-600 font-medium">{{ swimmer.registrationNumber || 'N/A' }}</td>
+            <td class="p-4">
+              <div class="flex items-center text-xs font-semibold" [ngClass]="{'text-emerald-600': swimmer.isActive, 'text-amber-600': !swimmer.isActive}">
+                <div class="w-2 h-2 rounded-full mr-2" [ngClass]="{'bg-emerald-500': swimmer.isActive, 'bg-amber-500': !swimmer.isActive}"></div> 
+                {{ swimmer.isActive ? 'Active' : 'Inactive' }}
+              </div>
+            </td>
+            <td class="p-4 text-right">
+              <div style="display:flex;align-items:center;justify-content:flex-end;gap:.5rem;">
+              <button (click)="openQrCode(swimmer)" style="background:transparent;border:none;cursor:pointer;padding:.4rem;border-radius:.5rem;color:#8b5cf6;" title="Afficher QR Code">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width:1.1rem;height:1.1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/></svg>
+              </button>
+              <button (click)="openEditModal(swimmer)"
+                style="background:#f0f9ff;color:#0ea5e9;border:none;cursor:pointer;padding:.4rem .75rem;border-radius:.5rem;font-size:.75rem;font-weight:600;display:flex;align-items:center;gap:.35rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width:.875rem;height:.875rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
+                {{ 'edit' | t }}
+              </button>
+              <button (click)="onDeleteSwimmer(swimmer.id!)"
+                style="background:#fff5f5;color:#ef4444;border:none;cursor:pointer;padding:.4rem .75rem;border-radius:.5rem;font-size:.75rem;font-weight:600;display:flex;align-items:center;gap:.35rem;">
+                <svg xmlns="http://www.w3.org/2000/svg" style="width:.875rem;height:.875rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+                {{ 'delete' | t }}
+              </button>
+              </div>
+            </td>
+          </tr>
+          
+          <tr *ngIf="filteredSwimmers.length === 0 && !loading">
+            <td colspan="5" class="p-8 text-center text-slate-500">
+              Aucun nageur ne correspond aux filtres ou à la recherche.
+            </td>
+          </tr>
+          <tr *ngIf="loading">
+            <td colspan="5" class="p-8 text-center text-slate-500">
+              Loading swimmers...
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- Add/Edit Swimmer Modal -->
+<div *ngIf="showModal" class="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/50 backdrop-blur-sm">
+  <div class="bg-white rounded-2xl shadow-xl w-full max-w-lg overflow-hidden animate-fade-in-up">
+    <div class="px-6 py-4 border-b border-slate-100 flex justify-between items-center bg-slate-50/50">
+      <h3 class="text-lg font-bold text-slate-800">
+        {{ isEditMode ? 'Modifier un Nageur' : 'Ajouter un Nageur' }}
+      </h3>
+      <button (click)="closeModal()" class="text-slate-400 hover:text-slate-600 transition-colors">
+        <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+    </div>
+    
+    <form [formGroup]="swimmerForm" (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Prénom</label>
+          <input type="text" formControlName="userFirstName" class="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pool/50 focus:border-pool transition-all" placeholder="e.g. Jean">
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Nom de famille</label>
+          <input type="text" formControlName="userLastName" class="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pool/50 focus:border-pool transition-all" placeholder="e.g. Dupont">
+        </div>
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Adresse E-mail</label>
+        <input type="email" formControlName="email" class="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pool/50 focus:border-pool transition-all" placeholder="e.g. jean.dupont@example.com">
+      </div>
+
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Matricule (Registration Number)</label>
+        <input type="text" formControlName="registrationNumber" class="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pool/50 focus:border-pool transition-all" placeholder="e.g. SWIM-002">
+      </div>
+
+      <!-- Password: only shown in Add mode -->
+      <div *ngIf="!isEditMode">
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Mot de passe <span class="text-red-500">*</span></label>
+        <input type="password" formControlName="password" class="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pool/50 focus:border-pool transition-all" placeholder="Mot de passe pour se connecter">
+        <p class="text-xs text-slate-400 mt-1">Le nageur pourra se connecter avec cet email et ce mot de passe.</p>
+      </div>
+      
+      <div class="grid grid-cols-2 gap-4">
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Niveau</label>
+          <select formControlName="level" class="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pool/50 focus:border-pool transition-all">
+            <option value="BEGINNER">Débutant (Beginner)</option>
+            <option value="INTERMEDIATE">Intermédiaire (Intermediate)</option>
+            <option value="ADVANCED">Avancé (Advanced)</option>
+            <option value="EXPERT">Expert (Expert)</option>
+          </select>
+        </div>
+        <div>
+          <label class="block text-sm font-semibold text-slate-700 mb-1">Catégorie</label>
+          <select formControlName="category" class="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pool/50 focus:border-pool transition-all">
+            <option value="CHILD">Enfant (Child)</option>
+            <option value="TEENAGER">Adolescent (Teenager)</option>
+            <option value="ADULT">Adulte (Adult)</option>
+          </select>
+        </div>
+      </div>
+      
+      <div>
+        <label class="block text-sm font-semibold text-slate-700 mb-1">Date de naissance</label>
+        <input type="date" formControlName="dateOfBirth" class="w-full px-4 py-2 border border-slate-200 rounded-lg text-sm bg-slate-50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-pool/50 focus:border-pool transition-all">
+      </div>
+      
+      <div class="flex items-center pt-2">
+        <input type="checkbox" formControlName="isActive" id="isActive" class="w-4 h-4 text-pool bg-slate-100 border-slate-300 rounded focus:ring-pool focus:ring-2">
+        <label for="isActive" class="ml-2 text-sm font-medium text-slate-700">Nageur Actif</label>
+      </div>
+
+      <div class="pt-6 border-t border-slate-100 flex justify-end space-x-3">
+        <button type="button" (click)="closeModal()" class="px-5 py-2.5 text-sm font-semibold text-slate-600 bg-slate-100 hover:bg-slate-200 rounded-xl transition-colors">
+          Annuler
+        </button>
+        <button type="submit" [disabled]="swimmerForm.invalid" class="px-5 py-2.5 text-sm font-semibold text-white bg-pool hover:bg-pool-dark disabled:opacity-50 disabled:cursor-not-allowed rounded-xl transition-colors shadow-sm shadow-pool/30">
+          {{ isEditMode ? 'Enregistrer les modifications' : 'Enregistrer' }}
+        </button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- QR Code Display Modal -->
+<div *ngIf="showQrModal && qrSwimmer" style="position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;background:rgba(15,23,42,.65);backdrop-filter:blur(4px);">
+  <div style="background:#fff;border-radius:1.25rem;box-shadow:0 25px 60px rgba(0,0,0,.25);width:100%;max-width:22rem;overflow:hidden;border:1px solid #e2e8f0;">
+    <!-- Header -->
+    <div style="padding:.875rem 1.25rem;background:linear-gradient(135deg,#7c3aed,#6d28d9);display:flex;align-items:center;justify-content:space-between;">
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;color:#fff;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
+        </svg>
+        <span style="color:#fff;font-weight:700;font-size:.95rem;">QR Code Nageur</span>
+      </div>
+      <button (click)="closeQrModal()" style="background:transparent;border:none;cursor:pointer;color:rgba(255,255,255,.8);padding:.25rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:1.25rem;height:1.25rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/>
+        </svg>
+      </button>
+    </div>
+    <!-- Body -->
+    <div style="padding:1.5rem;display:flex;flex-direction:column;align-items:center;gap:1rem;">
+      <div style="display:flex;align-items:center;gap:.75rem;">
+        <div style="width:3rem;height:3rem;border-radius:9999px;background:#0ea5e9;display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.1rem;">
+          {{ (qrSwimmer.userFirstName || '?').charAt(0) }}{{ (qrSwimmer.userLastName || '').charAt(0) }}
+        </div>
+        <div>
+          <p style="font-weight:700;color:#1e293b;margin:0;">{{ qrSwimmer.userFirstName }} {{ qrSwimmer.userLastName }}</p>
+          <p style="font-size:.75rem;color:#64748b;margin:0;">{{ qrSwimmer.registrationNumber || 'ID: ' + qrSwimmer.id }}</p>
+        </div>
+      </div>
+      <!-- QR Code image (data URL — no DOM timing issues) -->
+      <div style="display:flex;align-items:center;justify-content:center;padding:.75rem;background:#fff;border-radius:.75rem;border:2px solid #f1f5f9;box-shadow:inset 0 2px 8px rgba(0,0,0,.05);min-height:11rem;width:100%;">
+        <img *ngIf="qrDataUrl" [src]="qrDataUrl" style="width:220px;height:220px;display:block;" alt="QR Code">
+        <p *ngIf="!qrDataUrl" style="font-size:.875rem;color:#94a3b8;margin:0;">Génération du QR code...</p>
+      </div>
+      <p style="font-size:.75rem;color:#94a3b8;text-align:center;">Scannez avec le bouton <strong style="color:#7c3aed;">Scan QR</strong> (Admin/Coach)</p>
+      <!-- Download button -->
+      <button (click)="downloadQrCode()" style="width:100%;padding:.6rem;border-radius:.75rem;font-size:.875rem;font-weight:600;color:#fff;background:linear-gradient(135deg,#0ea5e9,#0369a1);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;">
+        <svg xmlns="http://www.w3.org/2000/svg" style="width:1rem;height:1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+        </svg>
+        Télécharger le QR Code
+      </button>
+    </div>
+  </div>
+</div>
