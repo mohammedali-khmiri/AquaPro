@@ -10,7 +10,7 @@
 
     <button (click)="triggerSync()" [disabled]="isScraping"
             class="px-5 py-2.5 bg-gradient-to-r from-pool to-pool-dark text-white font-semibold rounded-xl shadow-md shadow-pool/20 hover:scale-105 active:scale-95 transition flex items-center gap-2 disabled:opacity-50 disabled:scale-100">
-      <svg xmlns="http://www.w3.org/2000/xl" class="w-5 h-5 animate-spin" *ngIf="isScraping" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+      <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5 animate-spin" *ngIf="isScraping" fill="none" viewBox="0 0 24 24" stroke="currentColor">
         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 1121.253 8H18"/>
       </svg>
       {{ isScraping ? 'Mise à jour lancée...' : 'Synchroniser la FTN' }}
@@ -76,7 +76,6 @@
         </div>
 
         <div *ngFor="let club of clubs" class="flex items-center p-3 bg-white/80 rounded-xl border border-slate-100 shadow-sm hover:border-pool/30 transition-all">
-             class="flex items-center p-3 bg-white/80 rounded-xl border border-slate-100 shadow-sm hover:border-pool/30 transition-all">
           <div class="w-8 h-8 rounded-lg bg-pool/10 text-pool flex items-center justify-center font-bold text-sm flex-shrink-0">🏊</div>
           <div class="ml-3 min-w-0 flex-1">
             <p class="font-bold text-slate-800 text-xs truncate" [title]="club.name">{{ club.name }}</p>
@@ -85,6 +84,7 @@
             </p>
           </div>
         </div>
+
       </div>
     </div>
 

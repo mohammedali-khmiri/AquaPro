@@ -1,7 +1,7 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { Router, RouterLink, ActivatedRoute } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { LayoutService } from '../../services/layout.service';
 
@@ -11,15 +11,17 @@ import { LayoutService } from '../../services/layout.service';
   imports: [CommonModule, ReactiveFormsModule, RouterLink],
   templateUrl: './login.component.html'
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
   form: FormGroup;
   loading = false;
   errorMsg = '';
+  successMsg = '';
 
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
+    private route: ActivatedRoute,
     public layoutSvc: LayoutService
   ) {
     this.form = this.fb.group({
@@ -28,10 +30,21 @@ export class LoginComponent {
     });
   }
 
+  ngOnInit(): void {
+      // Écoute les paramètres de l'URL lors de l'ouverture de la page
+      this.route.queryParams.subscribe(params => {
+        if (params['status'] === 'pending_admin') {
+          this.successMsg = "Félicitations ! Votre e-mail a été validé avec succès. Votre compte est maintenant en attente d'approbation par l'administrateur.";
+        }
+      });
+    }
+
   onSubmit(): void {
     if (this.form.invalid) return;
     this.loading = true;
     this.errorMsg = '';
+    this.successMsg = '';
+
     const { email, password } = this.form.value;
     this.authService.login(email, password).subscribe({
       next: () => {
@@ -43,9 +56,13 @@ export class LoginComponent {
           this.router.navigate(['/dashboard']);
         }
       },
-      error: () => {
+      error: (err) => {
         this.loading = false;
-        this.errorMsg = 'Email ou mot de passe incorrect.';
+        if (err.error && err.error.message) {
+          this.errorMsg = err.error.message;
+        } else {
+          this.errorMsg = 'Une erreur de connexion est survenue.';
+        }
       }
     });
   }

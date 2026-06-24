@@ -38,6 +38,10 @@
         <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12A9 9 0 113 12a9 9 0 0118 0z"/></svg>
         {{ errorMsg }}
       </div>
+      <!-- Success -->
+      <div *ngIf="successMsg" class="alert alert-success mt-3 text-center">
+        {{ successMsg }}
+      </div>
 
       <!-- Formulaire -->
       <form [formGroup]="form" (ngSubmit)="onSubmit()" class="space-y-4">

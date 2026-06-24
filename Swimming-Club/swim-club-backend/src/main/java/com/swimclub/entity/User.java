@@ -41,6 +41,9 @@ public class User {
     @Column(updatable = false)
     private LocalDateTime createdAt;
 
+    private boolean enabled = false;
+    private String verificationToken;
+
     private LocalDateTime updatedAt;
 
     @ManyToMany(fetch = jakarta.persistence.FetchType.EAGER)

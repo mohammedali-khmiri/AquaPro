@@ -1,16 +1,14 @@
 <div class="flex items-center justify-between w-full">
   <div class="flex items-center gap-3">
-    <!-- Sidebar toggle -->
     <button (click)="layoutSvc.toggleSidebar()"
-      style="background-color:#0ea5e9;color:#fff;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);"
-      [title]="layoutSvc.isCollapsed ? 'Agrandir le menu' : 'Réduire le menu'">
+            style="background-color:#0ea5e9;color:#fff;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);"
+            [title]="layoutSvc.isCollapsed ? 'Agrandir le menu' : 'Réduire le menu'">
       <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
         <path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
       </svg>
       <span class="hidden md:inline">{{ layoutSvc.isCollapsed ? layoutSvc.t('expand') : layoutSvc.t('reduce') }}</span>
     </button>
 
-    <!-- Search -->
     <div class="relative hidden sm:block">
       <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400">
         <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -23,20 +21,17 @@
 
   <div class="flex items-center gap-3">
 
-    <!-- Langue -->
     <button (click)="layoutSvc.toggleLang()"
-      style="background-color:#6366f1;color:#fff;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);">
+            style="background-color:#6366f1;color:#fff;display:flex;align-items:center;gap:6px;padding:8px 14px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);">
       🌐 {{ layoutSvc.lang }}
     </button>
 
-    <!-- Dark mode toggle — bouton visible -->
     <button (click)="layoutSvc.toggleDarkMode()"
-      style="background-color:#0ea5e9;color:#fff;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);"
-      [title]="layoutSvc.isDark ? 'Mode clair' : 'Mode sombre'">
+            style="background-color:#0ea5e9;color:#fff;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2);"
+            [title]="layoutSvc.isDark ? 'Mode clair' : 'Mode sombre'">
       <span>{{ layoutSvc.isDark ? layoutSvc.t('light') : layoutSvc.t('dark') }}</span>
     </button>
 
-    <!-- Notifications -->
     <button
       style="position:relative;background:transparent;color:#64748b;display:flex;align-items:center;justify-content:center;width:38px;height:38px;border-radius:10px;border:1.5px solid #cbd5e1;cursor:pointer;">
       <svg xmlns="http://www.w3.org/2000/svg" style="width:18px;height:18px;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
@@ -47,7 +42,16 @@
 
     <div class="h-6 w-px bg-slate-200 dark:bg-slate-600"></div>
 
-    <!-- User info -->
+    <div *ngIf="!userInfo">
+      <button (click)="goToLogin()"
+              style="background-color:#0ea5e9;color:#fff;display:flex;align-items:center;gap:8px;padding:8px 14px;border-radius:10px;font-size:14px;font-weight:600;border:none;cursor:pointer;box-shadow:0 2px 6px rgba(0,0,0,.2); transition: transform 0.2s;"
+              onmouseover="this.style.transform='scale(1.03)'"
+              onmouseout="this.style.transform='scale(1)'">
+
+        <span>Se connecter</span>
+      </button>
+    </div>
+
     <div class="relative profile-dropdown-wrapper" *ngIf="userInfo">
       <div style="display:flex;align-items:center;gap:.25rem;cursor:pointer;" (click)="toggleProfile()">
         <div style="width:2.25rem;height:2.25rem;border-radius:9999px;background:linear-gradient(135deg,#0369a1,#0ea5e9);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:.875rem;border:2px solid #fff;box-shadow:0 1px 4px rgba(0,0,0,.2);flex-shrink:0;">
@@ -56,7 +60,7 @@
         <div style="margin-left:.5rem;">
           <p style="font-size:.875rem;font-weight:500;color:#334155;margin:0;">{{ userInfo.firstName }} {{ userInfo.lastName }}</p>
           <p style="font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;margin:0;"
-            [style.color]="role === 'ADMIN' ? '#ef4444' : role === 'COACH' ? '#3b82f6' : '#10b981'">
+             [style.color]="role === 'ADMIN' ? '#ef4444' : role === 'COACH' ? '#3b82f6' : '#10b981'">
             {{ role }}
           </p>
         </div>
@@ -65,30 +69,26 @@
         </svg>
       </div>
 
-      <!-- Profile dropdown card -->
       <div *ngIf="showProfile"
-        style="position:absolute;right:0;top:3.2rem;width:22rem;background:#fff;z-index:1000;border-radius:1rem;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.18);border:1px solid #e2e8f0;">
-        <!-- Colored banner by role -->
+           style="position:absolute;right:0;top:3.2rem;width:22rem;background:#fff;z-index:1000;border-radius:1rem;overflow:hidden;box-shadow:0 20px 60px rgba(0,0,0,.18);border:1px solid #e2e8f0;">
         <div style="height:6rem;display:flex;align-items:center;justify-content:center;"
-          [style.background]="role === 'ADMIN' ? 'linear-gradient(135deg,#ef4444,#b91c1c)' : role === 'COACH' ? 'linear-gradient(135deg,#3b82f6,#1d4ed8)' : 'linear-gradient(135deg,#10b981,#065f46)'">
+             [style.background]="role === 'ADMIN' ? 'linear-gradient(135deg,#ef4444,#b91c1c)' : role === 'COACH' ? 'linear-gradient(135deg,#3b82f6,#1d4ed8)' : 'linear-gradient(135deg,#10b981,#065f46)'">
           <div style="width:4rem;height:4rem;border-radius:9999px;background:rgba(255,255,255,.25);display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:1.5rem;border:2px solid rgba(255,255,255,.5);box-shadow:0 4px 12px rgba(0,0,0,.2);">
             {{ (userInfo.firstName || '?').charAt(0).toUpperCase() }}
           </div>
         </div>
-        <!-- Info section -->
         <div style="padding:1.25rem;display:flex;flex-direction:column;gap:.75rem;">
           <div style="text-align:center;">
             <p style="font-weight:700;color:#1e293b;font-size:1rem;margin:0;">{{ userInfo.firstName }} {{ userInfo.lastName }}</p>
             <div style="margin-top:.5rem;display:flex;flex-wrap:wrap;justify-content:center;gap:.25rem;">
               <span *ngFor="let r of roles"
-                [style.background]="r === 'ADMIN' ? '#fee2e2' : r === 'COACH' ? '#dbeafe' : '#d1fae5'"
-                [style.color]="r === 'ADMIN' ? '#b91c1c' : r === 'COACH' ? '#1d4ed8' : '#065f46'"
-                style="font-size:.7rem;font-weight:700;padding:.15rem .75rem;border-radius:9999px;display:inline-block;">
+                    [style.background]="r === 'ADMIN' ? '#fee2e2' : r === 'COACH' ? '#dbeafe' : '#d1fae5'"
+                    [style.color]="r === 'ADMIN' ? '#b91c1c' : r === 'COACH' ? '#1d4ed8' : '#065f46'"
+                    style="font-size:.7rem;font-weight:700;padding:.15rem .75rem;border-radius:9999px;display:inline-block;">
                 {{ r }}
               </span>
             </div>
           </div>
-          <!-- Name tiles -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
             <div style="padding:.625rem;border-radius:.75rem;background:#f8fafc;">
               <p style="font-size:.65rem;font-weight:600;color:#94a3b8;text-transform:uppercase;letter-spacing:.05em;margin:0 0 .15rem;">Prénom</p>
@@ -99,7 +99,6 @@
               <p style="font-size:.875rem;font-weight:600;color:#334155;margin:0;">{{ userInfo.lastName }}</p>
             </div>
           </div>
-          <!-- Email tile -->
           <div style="padding:.625rem;border-radius:.75rem;background:#f8fafc;display:flex;align-items:center;gap:.75rem;">
             <svg xmlns="http://www.w3.org/2000/svg" style="width:1rem;height:1rem;flex-shrink:0;color:#94a3b8;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
             <div style="min-width:0;">
@@ -107,7 +106,6 @@
               <p style="font-size:.8rem;color:#475569;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;">{{ userInfo.email }}</p>
             </div>
           </div>
-          <!-- ID + Role tiles -->
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:.5rem;">
             <div style="padding:.625rem;border-radius:.75rem;background:#f8fafc;">
               <p style="font-size:.65rem;font-weight:600;color:#94a3b8;text-transform:uppercase;margin:0 0 .15rem;">User ID</p>
@@ -116,30 +114,27 @@
             <div style="padding:.625rem;border-radius:.75rem;background:#f8fafc;">
               <p style="font-size:.65rem;font-weight:600;color:#94a3b8;text-transform:uppercase;margin:0 0 .15rem;">Rôle</p>
               <p style="font-size:.875rem;font-weight:700;margin:0;"
-                [style.color]="role === 'ADMIN' ? '#dc2626' : role === 'COACH' ? '#2563eb' : '#059669'">{{ role }}</p>
+                 [style.color]="role === 'ADMIN' ? '#dc2626' : role === 'COACH' ? '#2563eb' : '#059669'">{{ role }}</p>
             </div>
           </div>
-          <!-- Scan QR button — only for Admin and Coach -->
           <button *ngIf="role === 'ADMIN' || role === 'COACH'"
-            (click)="showProfile = false; qrSvc.toggle()"
-            style="width:100%;padding:.6rem;border-radius:.75rem;font-size:.875rem;font-weight:600;color:#fff;background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.25rem;">
+                  (click)="showProfile = false; qrSvc.toggle()"
+                  style="width:100%;padding:.6rem;border-radius:.75rem;font-size:.875rem;font-weight:600;color:#fff;background:linear-gradient(135deg,#8b5cf6,#7c3aed);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.25rem;">
             <svg xmlns="http://www.w3.org/2000/svg" style="width:1rem;height:1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
             </svg>
             Scanner un QR Code nageur
           </button>
-          <!-- Mon QR Code — only for Swimmer -->
           <button *ngIf="role === 'SWIMMER'"
-            (click)="showProfile = false; qrSvc.openMyQr()"
-            style="width:100%;padding:.6rem;border-radius:.75rem;font-size:.875rem;font-weight:600;color:#fff;background:linear-gradient(135deg,#10b981,#0d9488);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.25rem;">
+                  (click)="showProfile = false; qrSvc.openMyQr()"
+                  style="width:100%;padding:.6rem;border-radius:.75rem;font-size:.875rem;font-weight:600;color:#fff;background:linear-gradient(135deg,#10b981,#0d9488);border:none;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;margin-bottom:.25rem;">
             <svg xmlns="http://www.w3.org/2000/svg" style="width:1rem;height:1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
               <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v1m6 11h2m-6 0h-2v4m0-11v3m0 0h.01M12 12h4.01M16 20h4M4 12h4m12 0h.01M5 8h2a1 1 0 001-1V5a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1zm12 0h2a1 1 0 001-1V5a1 1 0 00-1-1h-2a1 1 0 00-1 1v2a1 1 0 001 1zM5 20h2a1 1 0 001-1v-2a1 1 0 00-1-1H5a1 1 0 00-1 1v2a1 1 0 001 1z"/>
             </svg>
             Mon QR Code
           </button>
-          <!-- Logout -->
           <button (click)="logout(); showProfile = false"
-            style="width:100%;padding:.5rem;border-radius:.75rem;font-size:.875rem;font-weight:600;color:#dc2626;background:transparent;border:1px solid #fecaca;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;">
+                  style="width:100%;padding:.5rem;border-radius:.75rem;font-size:.875rem;font-weight:600;color:#dc2626;background:transparent;border:1px solid #fecaca;cursor:pointer;display:flex;align-items:center;justify-content:center;gap:.5rem;">
             <svg xmlns="http://www.w3.org/2000/svg" style="width:1rem;height:1rem;" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/></svg>
             {{ layoutSvc.t('logout') }}
           </button>
@@ -148,4 +143,3 @@
     </div>
   </div>
 </div>
-

@@ -31,5 +31,11 @@ public class RegisterRequest {
     private String address;
 
     /** Role requested: COACH or SWIMMER. ADMIN cannot be self-registered. */
+    @NotBlank(message = "Le rôle est obligatoire")
     private String role;
+
+
+    // Getter et Setter
+    public String getRole() { return role; }
+    public void setRole(String role) { this.role = role; }
 }

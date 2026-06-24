@@ -29,6 +29,10 @@ export class HeaderComponent {
 
   toggleProfile() { this.showProfile = !this.showProfile; }
 
+  goToLogin() {
+    this.router.navigate(['/login']);
+  }
+
   @HostListener('document:click', ['$event'])
   onDocumentClick(event: MouseEvent) {
     const target = event.target as HTMLElement;

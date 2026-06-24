@@ -10,34 +10,35 @@ spring:
     oauth2:
       resourceserver:
         jwt:
-          issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI:http://keycloak:8080/realms/swimming-platform}
-          jwk-set-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI:http://keycloak:8080/realms/swimming-platform/protocol/openid-connect/certs}
+          #issuer-uri: ${SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI:http://keycloak:8080/realms/swimming-platform}
+          jwk-set-uri: http://aquapro-keycloak:8080/realms/swimming-platform/protocol/openid-connect/certs
 
   # ── Gateway Routes (Routage Inter-Conteneurs) ───────────────────────────
   cloud:
     gateway:
       routes:
-        # 1. Route Métier Standard (Sport) -> Backend Java
-        - id: sport-service
-          uri: ${SPORT_SERVICE_URL:http://backend:8089} # 🌟 Correction : nom du conteneur + port 8089
+        # 1. 🐍 Route vers le Scraper API -> Python FastAPI (Haute Priorité)
+        - id: scraper-api-service
+          uri: ${SCRAPER_SERVICE_URL:http://scraper-api:8000}
           predicates:
-            - Path=/api/sport/**
+            - Path=/api/scrape/**, /api/data/**
           filters:
             - PreserveHostHeader
 
-        # 2. Route pour le Chatbot IA (RAG) -> Backend Java
+        # 2. 🤖 Route pour le Chatbot IA (RAG) -> Backend Java
         - id: ai-chatbot-service
-          uri: ${AI_SERVICE_URL:http://backend:8089} # 🌟 Nouvelle route : Envoie les requêtes IA au backend
+          uri: ${AI_SERVICE_URL:http://backend:8089}
           predicates:
             - Path=/api/ai/**
           filters:
             - PreserveHostHeader
 
-        # 3. Route vers le Scraper API -> Python FastAPI
-        - id: scraper-api-service
-          uri: ${SCRAPER_SERVICE_URL:http://scraper-api:8000} # 🌟 Nouvelle route : Envoie le scraping et les données à FastAPI
+        # 3. 🏊 Route Métier Globale -> Backend Java (Englobe Auth, Pools, Competitions, etc.)
+        # Placé tout en bas pour servir de "Catch-All" sans bloquer FastAPI
+        - id: swim-club-backend
+          uri: http://backend:8089
           predicates:
-            - Path=/api/scrape/**, /api/data/**
+            - Path=/api/**
           filters:
             - PreserveHostHeader
 
@@ -49,7 +50,9 @@ spring:
       globalcors:
         cors-configurations:
           '[/**]':
-            allowedOrigins: "http://localhost:4200"
+            allowedOrigins:
+              - "http://localhost"      # 🌟 AJOUT : Pour le Frontend Docker (Port 80)
+              - "http://localhost:4200" # Pour le Frontend local en dev
             allowedMethods:
               - GET
               - POST

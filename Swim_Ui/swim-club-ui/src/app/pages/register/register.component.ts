@@ -17,7 +17,7 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   templateUrl: './register.component.html'
 })
 export class RegisterComponent {
-  form: FormGroup;
+  form!: FormGroup;
   loading = false;
   errorMsg = '';
   successMsg = '';
@@ -42,15 +42,20 @@ export class RegisterComponent {
     this.loading = true;
     this.errorMsg = '';
     const { firstName, lastName, email, password, role } = this.form.value;
+
     this.authService.register({ firstName, lastName, email, password, role }).subscribe({
-      next: () => {
+      next: (response: any) => {
         this.loading = false;
-        this.successMsg = 'Compte créé ! Vous pouvez maintenant vous connecter.';
-        setTimeout(() => this.router.navigate(['/login']), 1500);
+        this.errorMsg = '';
+        this.successMsg = "Inscription réussie ! Veuillez vérifier votre boîte e-mail pour activer votre compte.";
+
+        this.form.reset();
+
+        setTimeout(() => this.router.navigate(['/login']), 5000);
       },
       error: (err) => {
-        this.loading = false;
-        this.errorMsg = err.error || 'Erreur lors de la création du compte.';
+        this.successMsg = '';
+        this.errorMsg = "Une erreur est survenue lors de l'inscription.";
       }
     });
   }

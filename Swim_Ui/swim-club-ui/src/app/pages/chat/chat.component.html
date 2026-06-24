@@ -1,117 +1,75 @@
-<div class="flex h-[calc(100vh-8rem)] glass rounded-3xl overflow-hidden shadow-lg border border-slate-200/50">
-  <div class="w-80 border-r border-slate-200/50 bg-white/50 flex flex-col hidden md:flex">
-    <div class="p-4 border-b border-slate-200/50">
-      <h2 class="font-bold text-slate-800 text-lg">Assistant &amp; Chats</h2>
-      <div class="mt-3 relative">
-        <input type="text" placeholder="Search..." class="w-full pl-10 pr-4 py-2 bg-slate-100 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-pool" />
-        <span class="absolute left-3 top-2.5 text-slate-400">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
-        </span>
-      </div>
+<div class="grid grid-cols-1 md:grid-cols-3 gap-4 h-[calc(100vh-120px)] p-4 bg-slate-50 text-slate-800 dark:bg-slate-950 dark:text-white transition-colors duration-300">
+
+  <div *ngIf="authService.isLoggedIn()" class="md:col-span-1 bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl p-4 flex flex-col space-y-4 overflow-y-auto transition-colors">
+    <div class="border-b border-slate-200 dark:border-white/10 pb-2">
+      <h3 class="font-bold text-slate-700 dark:text-slate-200 flex items-center gap-2">
+        💬 Discussions Club
+      </h3>
+      <p class="text-[10px] text-slate-400 dark:text-slate-500">Échangez avec les entraîneurs et nageurs</p>
     </div>
-    <div class="flex-1 overflow-y-auto">
-      <div class="p-3 bg-pool/10 border-l-4 border-pool cursor-pointer">
-        <div class="flex items-center">
-          <div class="w-10 h-10 rounded-full bg-pool text-white flex items-center justify-center shadow-md">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 00.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-1.756-1.089a2.25 2.25 0 00-2.988.389L12 16.5l-2.256-2.7a2.25 2.25 0 00-2.988-.39L5 14.5m14 0v4.25A2.25 2.25 0 0116.75 21h-9.5A2.25 2.25 0 015 18.75V14.5"/></svg>
-          </div>
-          <div class="ml-3 flex-1">
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-slate-800 text-sm">Club Assistant</span>
-              <span class="text-xs text-pool-dark font-medium">Now</span>
-            </div>
-            <p class="text-xs text-slate-600 truncate mt-1">I've updated the pool temperatures.</p>
-          </div>
+
+    <div class="space-y-2">
+      <div *ngFor="let member of membersList" class="flex items-center gap-3 p-2.5 hover:bg-slate-100 dark:hover:bg-white/5 rounded-xl cursor-pointer transition">
+        <div class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center font-bold text-xs text-pool dark:text-cyan-400">
+          {{ member.firstName?.charAt(0) }}
         </div>
-      </div>
-      <div class="p-3 hover:bg-slate-50 border-l-4 border-transparent cursor-pointer transition-colors">
-        <div class="flex items-center">
-          <img src="https://i.pravatar.cc/150?img=60" class="w-10 h-10 rounded-full" />
-          <div class="ml-3 flex-1">
-            <div class="flex justify-between items-center">
-              <span class="font-bold text-slate-800 text-sm">Coach Rami</span>
-              <span class="text-xs text-slate-400">10:42 AM</span>
-            </div>
-            <p class="text-xs text-slate-500 truncate mt-1">Can we move the elite squad to lane 1?</p>
-          </div>
+        <div class="text-xs">
+          <p class="font-semibold text-slate-700 dark:text-slate-200">{{ member.firstName }} {{ member.lastName }}</p>
+          <p class="text-[10px] text-slate-400 dark:text-slate-500">En ligne</p>
         </div>
       </div>
     </div>
   </div>
 
-  <div class="flex-1 flex flex-col bg-slate-50/30">
-    <div class="p-4 border-b border-slate-200/50 bg-white/70 flex justify-between items-center">
-      <div class="flex items-center">
-        <div class="w-10 h-10 rounded-full bg-pool text-white flex items-center justify-center shadow-md relative">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.8"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 00.659 1.591L19 14.5M14.25 3.104c.251.023.501.05.75.082M19 14.5l-1.756-1.089a2.25 2.25 0 00-2.988.389L12 16.5l-2.256-2.7a2.25 2.25 0 00-2.988-.39L5 14.5m14 0v4.25A2.25 2.25 0 0116.75 21h-9.5A2.25 2.25 0 015 18.75V14.5"/></svg>
-          <span class="absolute bottom-0 right-0 w-3 h-3 bg-emerald-500 border-2 border-white rounded-full"></span>
+  <div [ngClass]="authService.isLoggedIn() ? 'md:col-span-2' : 'md:col-span-3'"
+       class="bg-white dark:bg-white/5 border border-slate-200 dark:border-white/10 rounded-2xl flex flex-col justify-between overflow-hidden shadow-xl transition-all">
+
+    <div class="bg-slate-100/60 dark:bg-white/5 border-b border-slate-200 dark:border-white/10 p-4 flex items-center justify-between transition-colors">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-cyan-500 to-blue-600 flex items-center justify-center font-bold text-xl shadow-md shadow-cyan-500/10">
+          🤖
         </div>
-        <div class="ml-3">
-          <p class="font-bold text-slate-800 text-sm flex items-center">
-            Club Assistant (Ollama)
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4 ml-1.5 text-pool" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
-          </p>
-          <p class="text-xs text-emerald-600">Online</p>
+        <div>
+          <h3 class="font-bold text-sm text-slate-800 dark:text-cyan-400 flex items-center gap-2">
+            Assistant AquaPro RAG
+          </h3>
+          <span class="text-[10px] text-emerald-600 dark:text-emerald-400 font-medium flex items-center gap-1">
+            <span class="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-ping"></span> Modèle Qwen Actif
+          </span>
+        </div>
+      </div>
+
+      <span *ngIf="!authService.isLoggedIn()" class="text-[10px] bg-cyan-500/10 dark:bg-cyan-500/20 text-cyan-600 dark:text-cyan-300 font-semibold px-2 py-1 rounded-md border border-cyan-500/20 dark:border-cyan-500/30">
+        Mode Visiteur (Public)
+      </span>
+    </div>
+
+    <div #chatContainer class="flex-1 p-4 overflow-y-auto space-y-4 bg-slate-100/40 dark:bg-slate-900/40 transition-colors">
+      <div *ngFor="let msg of messages"
+           [ngClass]="msg.role === 'user' ? 'justify-end' : 'justify-start'" class="flex">
+
+        <div [ngClass]="msg.role === 'user' ? 'bg-cyan-600 text-white rounded-br-none' : 'bg-slate-200 text-slate-800 dark:bg-white/10 dark:text-slate-200 rounded-bl-none'"
+             class="max-w-[75%] p-3 rounded-2xl text-xs shadow-sm border border-slate-300/40 dark:border-white/5 whitespace-pre-line transition-all">
+          {{ msg.content }}
         </div>
       </div>
     </div>
 
-    <div #chatContainer class="flex-1 overflow-y-auto p-6 space-y-6">
-      <div class="text-center text-xs text-slate-400 my-4">Today</div>
+    <div class="p-4 border-t border-slate-200 dark:border-white/10 bg-slate-50 dark:bg-slate-900/60 transition-colors">
+      <div class="flex gap-2">
+        <input type="text" [(ngModel)]="userInput" (keyup.enter)="sendMessage()"
+               placeholder="Posez votre question sur les clubs, temps ou règlements de la FTN..."
+               class="flex-1 bg-white dark:bg-white/5 border border-slate-300 dark:border-white/10 rounded-xl px-4 py-2.5 text-xs text-slate-800 dark:text-white placeholder-slate-400 dark:placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500 transition-all">
 
-      <ng-container *ngFor="let msg of messages">
-
-        <div *ngIf="msg.role === 'assistant'" class="flex items-start">
-          <div class="w-8 h-8 rounded-full bg-pool text-white flex items-center justify-center shadow-sm flex-shrink-0">
-            <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5M9.75 3.104c-.251.023-.501.05-.75.082m.75-.082a24.301 24.301 0 014.5 0m0 0v5.714a2.25 2.25 0 00.659 1.591L19 14.5"/></svg>
-          </div>
-          <div class="ml-3 bg-white p-4 rounded-2xl rounded-tl-sm shadow-sm border border-slate-200/50 max-w-lg">
-            <p class="text-sm text-slate-700 whitespace-pre-wrap">{{ msg.content }}</p>
-            <span class="text-[10px] mt-1 text-slate-400 block">{{ msg.timestamp | date:'HH:mm' }}</span>
-          </div>
-        </div>
-
-        <div *ngIf="msg.role === 'user'" class="flex items-start justify-end flex-row-reverse">
-          <img src="https://i.pravatar.cc/150?img=33" class="w-8 h-8 rounded-full shadow-sm flex-shrink-0" />
-          <div class="mr-3 bg-gradient-to-br from-pool to-pool-dark p-4 rounded-2xl rounded-tr-sm shadow-md shadow-pool/20 max-w-lg text-white">
-            <p class="text-sm whitespace-pre-wrap">{{ msg.content }}</p>
-            <span class="text-[10px] mt-1 text-white/70 block text-right">{{ msg.timestamp | date:'HH:mm' }}</span>
-          </div>
-        </div>
-
-      </ng-container>
-
-      <div *ngIf="isLoading && !messages[messages.length - 1].content" class="flex items-start">
-        <div class="w-8 h-8 rounded-full bg-pool text-white flex items-center justify-center shadow-sm flex-shrink-0">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9.75 3.104v5.714a2.25 2.25 0 01-.659 1.591L5 14.5"/></svg>
-        </div>
-        <div class="ml-3 bg-white p-4 rounded-2xl rounded-tl-sm shadow-sm border border-slate-200/50">
-          <div class="flex gap-1.5 items-center h-5">
-            <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce"></div>
-            <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.15s"></div>
-            <div class="w-2 h-2 bg-slate-400 rounded-full animate-bounce" style="animation-delay: 0.3s"></div>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <div class="p-4 bg-white/70 border-t border-slate-200/50">
-      <div class="flex items-center bg-slate-100 rounded-2xl p-2 pr-4">
-        <input
-          type="text"
-          [(ngModel)]="userInput"
-          (keyup.enter)="sendMessage()"
-          [disabled]="isLoading"
-          placeholder="Demandez un programme d'entraînement..."
-          class="flex-1 bg-transparent border-none focus:outline-none px-4 text-sm text-slate-700 disabled:opacity-50"
-        />
-        <button
-          (click)="sendMessage()"
-          [disabled]="!userInput.trim() || isLoading"
-          class="w-10 h-10 bg-pool hover:bg-pool-dark text-white rounded-xl shadow-md flex items-center justify-center transition-transform hover:scale-105 disabled:opacity-50 disabled:cursor-not-allowed">
-          <svg xmlns="http://www.w3.org/2000/svg" class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"/></svg>
+        <button (click)="sendMessage()"
+                class="px-4 py-2 bg-gradient-to-r from-cyan-500 to-blue-600 hover:from-cyan-400 hover:to-blue-500 font-semibold rounded-xl text-xs text-white transition active:scale-95 flex items-center gap-1 shadow-md shadow-cyan-500/10">
+          <span>Envoyer</span>
+          <svg xmlns="http://www.w3.org/2000/svg" class="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 19l9-2-9-12-9 12 9 2zm0 0v-8" />
+          </svg>
         </button>
       </div>
     </div>
+
   </div>
 </div>

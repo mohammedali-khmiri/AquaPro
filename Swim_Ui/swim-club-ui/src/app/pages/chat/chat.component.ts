@@ -1,11 +1,12 @@
-import { Component, ElementRef, ViewChild, AfterViewChecked } from '@angular/core';
+import { Component, ElementRef, ViewChild, AfterViewChecked, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AiService } from '../../services/ai.service';
+import { AuthService } from '../../services/auth.service'; // 🌟 AJOUT : Importation de ton service d'authentification
 
 interface Message {
-  role: 'user' | 'assistant'; // Aligné sur votre HTML (msg.role)
-  content: string;             // Aligné sur votre HTML (msg.content)
+  role: 'user' | 'assistant';
+  content: string;
   timestamp: Date;
 }
 
@@ -16,11 +17,12 @@ interface Message {
   templateUrl: './chat.component.html',
   styleUrls: ['./chat.component.css']
 })
-export class ChatComponent implements AfterViewChecked {
+export class ChatComponent implements OnInit, AfterViewChecked {
   userInput: string = '';
   isLoading: boolean = false;
+  membersList: any[] = []; // 🌟 AJOUT : Pour éviter les crashs HTML si connecté
 
-  // Historique initial avec votre assistant
+  // Historique initial avec ton assistant
   messages: Message[] = [
     {
       role: 'assistant',
@@ -29,10 +31,26 @@ export class ChatComponent implements AfterViewChecked {
     }
   ];
 
-  // 🌟 Récupération de votre identifiant HTML #chatContainer pour l'auto-scroll
+  // Récupération de l'identifiant HTML #chatContainer pour l'auto-scroll
   @ViewChild('chatContainer') private chatContainer!: ElementRef;
 
-  constructor(private aiService: AiService) {}
+  // 🌟 MODIFICATION : Injection de l'AuthService en PUBLIC pour le template HTML
+  constructor(
+    private aiService: AiService,
+    public authService: AuthService
+  ) {}
+
+  ngOnInit(): void {
+    // 🌟 AJOUT : Si l'utilisateur est connecté, on peut charger les membres du club
+    if (this.authService.isLoggedIn()) {
+      this.loadClubMembers();
+    }
+  }
+
+  loadClubMembers(): void {
+    // Ici, tu pourras appeler un service (ex: SwimmerService) pour alimenter ta liste de membres
+    // Exemple temporaire : this.membersList = [{ firstName: 'Jean', lastName: 'Dupont' }];
+  }
 
   // Force le défilement vers le bas dès qu'un nouveau mot s'affiche
   ngAfterViewChecked() {
@@ -47,7 +65,6 @@ export class ChatComponent implements AfterViewChecked {
     }
   }
 
-  // 🌟 Votre méthode renommée pour correspondre au (click) et (keyup.enter) de votre UI
   sendMessage() {
     if (!this.userInput.trim() || this.isLoading) return;
 
@@ -79,7 +96,7 @@ export class ChatComponent implements AfterViewChecked {
         aiMessage.content += chunk;
       },
       () => {
-        // Fin de la génération, on cache l'animation des 3 petits points (animate-bounce)
+        // Fin de la génération, on cache l'animation des 3 petits points
         this.isLoading = false;
       },
       (error) => {

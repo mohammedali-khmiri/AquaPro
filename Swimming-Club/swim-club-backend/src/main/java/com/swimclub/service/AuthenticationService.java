@@ -39,6 +39,7 @@ public class AuthenticationService {
     private JwtTokenProvider jwtTokenProvider;
 
     public LoginResponse login(LoginRequest loginRequest) {
+        // 1. Authentification standard (Vérification email/password)
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -46,12 +47,19 @@ public class AuthenticationService {
                 )
         );
 
+        // 2. Récupération du profil complet depuis PostgreSQL
         User user = userRepository.findByEmail(loginRequest.getEmail())
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        String token = jwtTokenProvider.generateToken(authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User 
-            ? (org.springframework.security.core.userdetails.User) authentication.getPrincipal()
-            : org.springframework.security.core.userdetails.User.builder()
+        // SÉCURITÉ GMAIL : Blocage si le compte n'est pas encore "enabled"
+        if (!user.isEnabled()) {
+            throw new RuntimeException("Votre compte n'est pas encore activé. Veuillez vérifier votre boîte e-mail pour valider votre inscription.");
+        }
+
+        // 3. Génération du Token JWT si le compte est actif
+        String token = jwtTokenProvider.generateToken(authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User
+                ? (org.springframework.security.core.userdetails.User) authentication.getPrincipal()
+                : org.springframework.security.core.userdetails.User.builder()
                 .username(user.getEmail())
                 .password("")
                 .authorities(new java.util.ArrayList<>())
@@ -61,6 +69,7 @@ public class AuthenticationService {
                 .map(r -> r.getName())
                 .collect(java.util.stream.Collectors.toList());
 
+        // 4. Retour de la réponse complète au Frontend Angular
         return LoginResponse.builder()
                 .token(token)
                 .type("Bearer")
