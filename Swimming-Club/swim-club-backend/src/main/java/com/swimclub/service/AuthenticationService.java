@@ -15,6 +15,7 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -39,7 +40,35 @@ public class AuthenticationService {
     private JwtTokenProvider jwtTokenProvider;
 
     public LoginResponse login(LoginRequest loginRequest) {
-        // 1. Authentification standard (Vérification email/password)
+
+        // 1. On récupère d'abord l'utilisateur en BDD
+        User user = userRepository.findByEmail(loginRequest.getEmail())
+                .orElseThrow(() -> new RuntimeException("PASSWORD_OR_EMAIL_INVALID")); // 🌟 Changé en RuntimeException
+
+        // 2. PRIORITÉ ABSOLUE : Vérification du mot de passe (Sécurisée contre les crashs BCrypt)
+        boolean passwordMatches = false;
+        try {
+            passwordMatches = passwordEncoder.matches(loginRequest.getPassword(), user.getPassword());
+        } catch (Exception e) {
+            // Si le mot de passe en BDD n'est pas encodé (texte brut), on évite le crash système
+            passwordMatches = false;
+        }
+
+        if (!passwordMatches) {
+            throw new RuntimeException("PASSWORD_OR_EMAIL_INVALID");
+        }
+
+        // 2. ✉️ CHECK 1 (Prioritaire) : On teste le mail en premier
+        if (!user.isEnabled()) {
+            throw new RuntimeException("MAIL_NOT_VERIFIED");
+        }
+
+        // 3. 👑 CHECK 2 : Si le mail est OK, on vérifie l'approbation de l'admin
+        if (!user.getIsActive()) {
+            throw new RuntimeException("ADMIN_NOT_APPROVED");
+        }
+
+        // 4. 🔑 SEULEMENT ICI : Si les deux verrous manuels sont passés, on vérifie le mot de passe
         Authentication authentication = authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         loginRequest.getEmail(),
@@ -47,16 +76,7 @@ public class AuthenticationService {
                 )
         );
 
-        // 2. Récupération du profil complet depuis PostgreSQL
-        User user = userRepository.findByEmail(loginRequest.getEmail())
-                .orElseThrow(() -> new RuntimeException("User not found"));
-
-        // SÉCURITÉ GMAIL : Blocage si le compte n'est pas encore "enabled"
-        if (!user.isEnabled()) {
-            throw new RuntimeException("Votre compte n'est pas encore activé. Veuillez vérifier votre boîte e-mail pour valider votre inscription.");
-        }
-
-        // 3. Génération du Token JWT si le compte est actif
+        // 5. Génération du Token JWT si tout est au vert
         String token = jwtTokenProvider.generateToken(authentication.getPrincipal() instanceof org.springframework.security.core.userdetails.User
                 ? (org.springframework.security.core.userdetails.User) authentication.getPrincipal()
                 : org.springframework.security.core.userdetails.User.builder()
@@ -69,7 +89,6 @@ public class AuthenticationService {
                 .map(r -> r.getName())
                 .collect(java.util.stream.Collectors.toList());
 
-        // 4. Retour de la réponse complète au Frontend Angular
         return LoginResponse.builder()
                 .token(token)
                 .type("Bearer")

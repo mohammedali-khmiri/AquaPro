@@ -47,20 +47,38 @@ public class AuthenticationController {
             LoginResponse response = authenticationService.login(loginRequest);
             return ResponseEntity.ok(response);
 
-        } catch (DisabledException e) {
-            // ✉️ Reçu si ÉTAPE 1 a échoué (enabled == false)
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(java.util.Map.of("message", "Votre compte n'est pas encore activé. Veuillez vérifier votre boîte e-mail pour valider votre inscription."));
-
-        } catch (BadCredentialsException e) {
-            // ❌ Reçu en cas d'erreur d'identifiants
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(java.util.Map.of("message", "Email ou mot de passe incorrect."));
-
         } catch (Exception e) {
-            // Sécurité globale de secours
+            String errorMessage = e.getMessage();
+
+            // 📺 Affiche l'erreur exacte dans ton terminal Docker pour comprendre ce qui bloque
+            System.out.println("🔴 [LOGIN ERROR SYSTEM] : " + errorMessage);
+
+            // ❌ 1. Mauvais mot de passe OU Email inconnu
+            if (errorMessage != null && (
+                    errorMessage.contains("PASSWORD_OR_EMAIL_INVALID") ||
+                            errorMessage.contains("Email ou mot de passe incorrect") ||
+                            errorMessage.toLowerCase().contains("bad credentials"))) {
+
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(java.util.Map.of("message", "Email ou mot de passe incorrect."));
+            }
+
+            //  Si l'erreur contient le code du Mail
+            if (errorMessage != null && errorMessage.contains("MAIL_NOT_VERIFIED")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(java.util.Map.of("message", "Votre compte n'est pas encore activé. Veuillez vérifier votre boîte e-mail pour valider votre inscription."));
+            }
+
+            // Si l'erreur contient le code de l'Admin
+            if (errorMessage != null && errorMessage.contains("ADMIN_NOT_APPROVED")) {
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+                        .body(java.util.Map.of("message", "Votre compte est inactif. Veuillez contacter votre administrateur pour approuver votre compte."));
+            }
+
+
+            // Cas de secours général
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(java.util.Map.of("message", "Erreur d'authentification : " + e.getMessage()));
+                    .body(java.util.Map.of("message", "Une erreur de connexion est survenue."));
         }
     }
 
