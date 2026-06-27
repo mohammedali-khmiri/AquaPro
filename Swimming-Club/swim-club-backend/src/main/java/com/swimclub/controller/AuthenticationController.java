@@ -20,6 +20,9 @@ import jakarta.validation.Valid;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
 import org.springframework.security.authentication.BadCredentialsException;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/auth")
@@ -100,7 +103,7 @@ public class AuthenticationController {
 
         // REDIRECTION : On envoie l'utilisateur vers le login Angular avec le statut d'attente admin
         return ResponseEntity.status(HttpStatus.FOUND)
-                .header("Location", "http://localhost/login?status=pending_admin")
+                .header("Location", "http://localhost/verified-success")
                 .build();
     }
 

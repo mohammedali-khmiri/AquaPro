@@ -68,6 +68,7 @@ public class JwtTokenProvider {
 
             return !isTokenExpired(token);
         } catch (Exception e) {
+            System.out.println("❌ Erreur de validation du JWT : " + e.getMessage());
             return false;
         }
     }

@@ -31,12 +31,7 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-      // Écoute les paramètres de l'URL lors de l'ouverture de la page
-      this.route.queryParams.subscribe(params => {
-        if (params['status'] === 'pending_admin') {
-          this.successMsg = "Félicitations ! Votre e-mail a été validé avec succès. Votre compte est maintenant en attente d'approbation par l'administrateur.";
-        }
-      });
+
     }
 
   onSubmit(): void {

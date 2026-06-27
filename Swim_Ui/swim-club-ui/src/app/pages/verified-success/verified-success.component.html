@@ -1,0 +1,29 @@
+<div class="fixed inset-0 z-[9999] w-screen h-screen flex items-center justify-center bg-slate-900 px-4 overflow-y-auto select-none">
+
+  <div class="absolute top-1/4 left-1/4 w-96 h-96 bg-pool/20 rounded-full blur-[120px] pointer-events-none"></div>
+  <div class="absolute bottom-1/4 right-1/4 w-96 h-96 bg-emerald-500/15 rounded-full blur-[120px] pointer-events-none"></div>
+
+  <div class="max-w-md w-full bg-slate-800/80 backdrop-blur-2xl rounded-3xl p-8 border border-slate-700/60 text-center shadow-2xl relative overflow-hidden animate-fade-in">
+
+    <div class="w-20 h-20 bg-emerald-500/10 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-6 border border-emerald-500/30 shadow-lg shadow-emerald-500/5">
+      <svg xmlns="http://www.w3.org/2000/svg" class="h-10 w-10 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+      </svg>
+    </div>
+
+    <h1 class="text-3xl font-black text-white tracking-tight mb-2">Félicitations ! 🎉</h1>
+    <p class="text-emerald-400 font-bold text-sm mb-5 tracking-wide uppercase">Compte vérifié avec succès</p>
+
+    <p class="text-slate-400 text-sm leading-relaxed mb-8 px-2">
+      Votre adresse e-mail est validée. Votre demande d'adhésion a été transmise aux administrateurs. Vous pourrez vous connecter dès l'approbation de votre compte.
+    </p>
+
+    <div class="border-t border-slate-700/60 pt-6">
+      <div class="flex items-center justify-center gap-3 text-xs text-slate-400">
+        <div class="w-4 h-4 border-2 border-pool border-t-transparent rounded-full animate-spin"></div>
+        <span>Redirection automatique dans <strong class="text-pool font-extrabold text-sm">{{ countdown }}s</strong>...</span>
+      </div>
+    </div>
+
+  </div>
+</div>

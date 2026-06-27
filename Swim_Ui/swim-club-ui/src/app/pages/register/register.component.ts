@@ -38,9 +38,17 @@ export class RegisterComponent {
   }
 
   onSubmit(): void {
-    if (this.form.invalid) return;
+    if (this.form.invalid) {
+      // 🌟 LA MAGIE ICI : Si le formulaire est invalide, on marque tous les champs comme "touched".
+      // Cela va instantanément forcer l'affichage du check rouge sur l'e-mail mal écrit !
+      this.form.markAllAsTouched();
+      return;
+    }
+
     this.loading = true;
     this.errorMsg = '';
+    this.successMsg = ''; // On nettoie les anciens messages de succès au cas où
+
     const { firstName, lastName, email, password, role } = this.form.value;
 
     this.authService.register({ firstName, lastName, email, password, role }).subscribe({
@@ -54,8 +62,14 @@ export class RegisterComponent {
         setTimeout(() => this.router.navigate(['/login']), 5000);
       },
       error: (err) => {
+        // 🌟 CORRECTION DU BUG : On repasse loading à false ici aussi !
+        // Sinon, en cas d'erreur, le bouton reste bloqué en mode "chargement".
+        this.loading = false;
         this.successMsg = '';
-        this.errorMsg = "Une erreur est survenue lors de l'inscription.";
+
+        // 🌟 AMÉLIORATION : On extrait le vrai message d'erreur du backend s'il existe
+        // (ex: "Cet e-mail est déjà utilisé"), sinon on met le message générique.
+        this.errorMsg = err.error?.message || "Une erreur est survenue lors de l'inscription.";
       }
     });
   }

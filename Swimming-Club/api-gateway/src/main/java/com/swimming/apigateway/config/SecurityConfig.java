@@ -34,7 +34,16 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .securityMatcher(exchange -> {
                     String path = exchange.getRequest().getURI().getPath();
-                    if (path.startsWith("/api/scrape") || path.startsWith("/api/data") || path.startsWith("/actuator") || path.startsWith("/api/auth")) {
+                    // 🌟 LA CORRECTION ICI : On ajoute tes routes pour qu'elles bypassent Keycloak sur la Gateway
+                    if (path.startsWith("/api/scrape") ||
+                            path.startsWith("/api/data") ||
+                            path.startsWith("/actuator") ||
+                            path.startsWith("/api/auth") ||
+                            path.startsWith("/api/sessions") ||
+                            path.startsWith("/api/competitions") ||
+                            path.startsWith("/api/ai") ||
+                            path.startsWith("/api/pools") ||
+                            path.startsWith("/api/coaches")) {
                         return ServerWebExchangeMatcher.MatchResult.match();
                     }
                     return ServerWebExchangeMatcher.MatchResult.notMatch();

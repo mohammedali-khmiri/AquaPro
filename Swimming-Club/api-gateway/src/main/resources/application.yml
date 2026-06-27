@@ -51,8 +51,9 @@ spring:
         cors-configurations:
           '[/**]':
             allowedOrigins:
-              - "http://localhost"      # 🌟 AJOUT : Pour le Frontend Docker (Port 80)
-              - "http://localhost:4200" # Pour le Frontend local en dev
+              - "http://localhost"
+              - "http://localhost:4200"
+              - "http://127.0.0.1"
             allowedMethods:
               - GET
               - POST

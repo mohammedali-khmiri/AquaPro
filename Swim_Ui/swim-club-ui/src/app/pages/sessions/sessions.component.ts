@@ -27,6 +27,7 @@ export class SessionsComponent implements OnInit {
   searchTerm = '';
   filterLevel = '';
   filterStatus = '';
+  minDate: string;
 
   readonly levels = ['BEGINNER', 'INTERMEDIATE', 'ADVANCED', 'ELITE'];
 
@@ -35,12 +36,28 @@ export class SessionsComponent implements OnInit {
     private coachService: CoachService,
     private authService: AuthService,
     private fb: FormBuilder
-  ) {}
+  ) {
+    const today = new Date();
+    this.minDate = today.toISOString().substring(0, 16);
+  }
 
   ngOnInit(): void {
     this.initForm();
     this.loadSessions();
-    this.coachService.getAllCoaches().subscribe({ next: c => this.coaches = c });
+    this.loadCoaches();
+  }
+
+  loadCoaches(): void {
+    this.coachService.getAllCoaches().subscribe({
+      next: allCoaches => {
+        if (this.isAdmin) {
+          this.coaches = allCoaches;
+        } else if (this.authService.hasRole('COACH')) {
+          const coachId = this.authService.getUserId();
+          this.coaches = allCoaches.filter(c => c.id === coachId);
+        }
+      }
+    });
   }
 
   get isAdmin(): boolean { return this.authService.hasRole('ADMIN'); }
@@ -87,6 +104,9 @@ export class SessionsComponent implements OnInit {
     this.isEditMode = false;
     this.selectedSessionId = null;
     this.sessionForm.reset({ isCancelled: false, coachId: '' });
+    if (this.authService.hasRole('COACH')) {
+      this.sessionForm.patchValue({ coachId: this.authService.getUserId() });
+    }
     this.showModal = true;
   }
 
@@ -149,4 +169,3 @@ export class SessionsComponent implements OnInit {
     return new Date(dt).toLocaleString('fr-FR', { dateStyle: 'short', timeStyle: 'short' });
   }
 }
-

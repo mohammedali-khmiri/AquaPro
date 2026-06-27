@@ -15,6 +15,7 @@ import { IpCameraComponent } from './pages/ip-camera/ip-camera.component';
 import { IotControlComponent } from './pages/iot-control/iot-control.component';
 import { authGuard } from './guards/auth.guard';
 import { LiveDashboardComponent } from './pages/live-dashboard/live-dashboard.component';
+import { VerifiedSuccessComponent } from './pages/verified-success/verified-success.component';
 
 export const routes: Routes = [
   { path: '', redirectTo: 'login', pathMatch: 'full' },
@@ -28,6 +29,7 @@ export const routes: Routes = [
   { path: 'pool-prototype', component: PoolPrototypeComponent },
   { path: 'ip-camera', component: IpCameraComponent },
   { path: 'iot-control', component: IotControlComponent },
+  { path: 'verified-success', component: VerifiedSuccessComponent },
 
   // Auth required
   { path: 'dashboard', component: DashboardComponent, canActivate: [authGuard] },

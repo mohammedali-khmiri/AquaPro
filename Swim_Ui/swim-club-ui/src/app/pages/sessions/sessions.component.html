@@ -110,12 +110,12 @@
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Début *</label>
-          <input type="datetime-local" formControlName="startTime" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pool text-sm">
+          <input type="datetime-local" formControlName="startTime" [min]="minDate" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pool text-sm">
           <p *ngIf="sessionForm.get('startTime')?.invalid && sessionForm.get('startTime')?.touched" class="text-red-500 text-xs mt-1">Requis</p>
         </div>
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Fin *</label>
-          <input type="datetime-local" formControlName="endTime" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pool text-sm">
+          <input type="datetime-local" formControlName="endTime" [min]="minDate" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pool text-sm">
           <p *ngIf="sessionForm.get('endTime')?.invalid && sessionForm.get('endTime')?.touched" class="text-red-500 text-xs mt-1">Requis</p>
         </div>
       </div>
@@ -127,10 +127,20 @@
       <div class="grid grid-cols-2 gap-3">
         <div>
           <label class="block text-sm font-medium text-slate-700 mb-1">Coach *</label>
-          <select formControlName="coachId" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pool text-sm">
+
+          <!-- If Admin, show dropdown -->
+          <select *ngIf="isAdmin" formControlName="coachId" class="w-full border border-slate-200 rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-pool text-sm">
             <option value="">-- Choisir un coach --</option>
             <option *ngFor="let c of coaches" [value]="c.id">{{ c.userFirstName }} {{ c.userLastName }}</option>
           </select>
+
+          <!-- If Coach, show disabled input with their name -->
+          <div *ngIf="!isAdmin && coaches.length > 0">
+              <input type="text" [value]="coaches[0].userFirstName + ' ' + coaches[0].userLastName"
+                     class="w-full border border-slate-200 rounded-xl px-4 py-2.5 bg-slate-50 text-slate-500 text-sm"
+                     disabled>
+          </div>
+
           <p *ngIf="sessionForm.get('coachId')?.invalid && sessionForm.get('coachId')?.touched" class="text-red-500 text-xs mt-1">Requis</p>
         </div>
         <div>
@@ -163,4 +173,3 @@
     </form>
   </div>
 </div>
-

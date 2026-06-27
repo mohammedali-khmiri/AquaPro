@@ -110,7 +110,7 @@ services:
       context: ./Swimming-Club/api-gateway
     container_name: aquapro-gateway
     ports:
-      - "8080:8080" # L'unique porte d'entrée de l'application
+      - "8082:8080" # L'unique porte d'entrée de l'application
     depends_on:
       - backend
       - scraper-api
